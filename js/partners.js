@@ -1,9 +1,9 @@
 const cardsRestaurants = document.querySelector('.cards-restaurants');
+
 const renderPartner = (items) => {
-    const pageItems = items.map(item => {
-        return `
-          <a href="restaurant.html" class="card card-restaurant">
-            <img src="${item.image}" alt="image" class="card-image" />
+    const partnersItems = items.map(item => {
+        return `<a href="restaurant.html" class="card card-restaurant" data-products="${item.products}">
+            <img src="${item.image}" alt="${item.name}" class="card-image" />
             <div class="card-text">
                 <div class="card-heading">
                     <h3 class="card-title">${item.name}</h3>
@@ -20,9 +20,22 @@ const renderPartner = (items) => {
         </a>
         `
     })
+    cardsRestaurants.insertAdjacentHTML('afterbegin', partnersItems);
 
-    cardsRestaurants.insertAdjacentHTML('afterbegin', pageItems);
-
+    const restaurantsItems = document.querySelectorAll('.card-restaurant');
+    restaurantsItems.forEach((restaurant, index) => {
+        restaurant.addEventListener('click', (event) => {
+            event.preventDefault();
+            if (!localStorage.getItem('user')) {
+                modalAuth.classList.add('is-open');
+            } else {
+                localStorage.setItem('restaurant', JSON.stringify(items[index]));
+                window.location.href = '/restaurant.html';
+            }
+        })
+    })
 }
+
+
 
 const partners = fetch('./db/partners.json').then(response => response.json()).then(data => renderPartner(data));
